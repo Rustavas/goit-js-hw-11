@@ -4,7 +4,7 @@ export default class ApiRequest {
   constructor(){
     this.searchQuery ='';
     this.page = 1;
-    this.numberPerPage = 20;
+    this.numberPerPage = 40;
   }
   fetchRequest(searchQuery){
      
@@ -16,7 +16,6 @@ export default class ApiRequest {
     .then(data => {
 
      this.incrementPage(); 
-      console.log(data)
       return data;
     });
   }

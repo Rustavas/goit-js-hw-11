@@ -20,15 +20,7 @@ const loadMoreBtn = new LoadMoreBtn({
 
 refs.searchForm.addEventListener('submit', onSearch);
 window.addEventListener("scroll", handleScroll);
-refs.gallery.addEventListener("click", disableClick)
 
-function disableClick(e){
-  // e.preventDefault();
-  if(e.target.nodeName === "img"){
-    e.preventDefault();
-  }
-
-}
 function onSearch (e){
   e.preventDefault();  
   apiService.query = e.currentTarget.elements.searchQuery.value
@@ -89,15 +81,6 @@ function getLoadMoreApiMarkup(){
   
   });
 }
-function showLastPage(){
-  return apiService.fetchRequest()
-  .then(({hits, totalHits}) => {
-    if(totalHits / hits.length * refs.pageNumber <= 1 ){
-      Notify.failure('We are sorry, but you have reached the end of search results.')
-    }
-        
-  })
-}
 
 function getFetchLoadMore(){
   return apiService.fetchRequest()
@@ -127,25 +110,22 @@ function handleScroll() {
     
   }
 }
-// ==========================================
-
-// ==========================================
 
 
-//   const { height: cardHeight } = document
-//   .querySelector(".gallery")
-//   .firstElementChild.getBoundingClientRect();
+  const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
 
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: "smooth",
-// });
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
 
 
 
 const lightbox = new SimpleLightbox('.gallery a', { 
-  // captions: true,
-  // captionDelay: 250,
-  // captionPosition: 'bottom',
-  // captionsData: 'alt', 
+  captions: true,
+  captionDelay: 250,
+  captionPosition: 'bottom',
+  captionsData: 'alt', 
   });
