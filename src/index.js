@@ -20,7 +20,13 @@ const loadMoreBtn = new LoadMoreBtn({
 
 refs.searchForm.addEventListener('submit', onSearch);
 window.addEventListener("scroll", handleScroll);
+refs.gallery.addEventListener("click", disableClick)
 
+function disableClick(e){
+  if(e.target.nodeName === "img"){
+    e.preventDefault();
+  }
+}
 function onSearch (e){
   e.preventDefault();  
   apiService.query = e.currentTarget.elements.searchQuery.value
@@ -37,16 +43,16 @@ function createMarkup({largeImageURL, tags, likes, views, comments, downloads, w
   alt="${tags}" loading="lazy" /></a>
   <div class="info">
     <p class="info-item">
-      <b>Likes: ${likes}</b>
+      <b>Likes: <br>${likes}</b>
     </p>
     <p class="info-item">
-      <b>Views: ${views}</b>
+      <b>Views: <br>${views}</b>
     </p>
     <p class="info-item">
-      <b>Comments: ${comments}</b>
+      <b>Comments: <br>${comments}</b>
     </p>
     <p class="info-item">
-      <b>downloads: ${downloads}</b>
+      <b>downloads: <br>${downloads}</b>
     </p>
   </div>
 </div>`
@@ -55,6 +61,14 @@ function createMarkup({largeImageURL, tags, likes, views, comments, downloads, w
 function fetchApiMarkup(){
   return getApiMarkup().then(markup =>{ 
     updateGallery(markup);
+      const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 2,
+  behavior: "smooth",
+});
   })
   .catch(err => {
     console.log(err)
@@ -80,6 +94,15 @@ function getLoadMoreApiMarkup(){
     updateGallery(markup);
   
   });
+}
+function showLastPage(){
+  return apiService.fetchRequest()
+  .then(({hits, totalHits}) => {
+    if(totalHits / hits.length * refs.pageNumber <= 1 ){
+      Notify.failure('We are sorry, but you have reached the end of search results.')
+    }
+        
+  })
 }
 
 function getFetchLoadMore(){
@@ -110,16 +133,19 @@ function handleScroll() {
     
   }
 }
+// ==========================================
+
+// ==========================================
 
 
-  const { height: cardHeight } = document
-  .querySelector(".gallery")
-  .firstElementChild.getBoundingClientRect();
+//   const { height: cardHeight } = document
+//   .querySelector(".gallery")
+//   .firstElementChild.getBoundingClientRect();
 
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: "smooth",
-});
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: "smooth",
+// });
 
 
 
