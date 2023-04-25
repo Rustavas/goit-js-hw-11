@@ -1,0 +1,22 @@
+.gallery{
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: -10px;
+  // justify-content: space-between;
+  
+  // justify-content: center;
+  margin: 0 auto;
+  
+}
+.photo-card{
+  width: calc((100% - 40px) / 4);
+  margin: 5px;
+}
+.info{
+display: flex;
+}
+img{
+  width: 100%;
+  height: auto;
+}

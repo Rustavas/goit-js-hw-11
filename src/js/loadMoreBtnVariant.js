@@ -10,7 +10,6 @@ import LoadMoreBtn from './js/loadMore';
 const refs = {
   searchForm: document.getElementById('search-form'),
   gallery: document.querySelector('.gallery'),
-  
 };
 const apiService = new ApiService();
 const loadMoreBtn = new LoadMoreBtn({
@@ -19,30 +18,24 @@ const loadMoreBtn = new LoadMoreBtn({
 });
 
 refs.searchForm.addEventListener('submit', onSearch);
-window.addEventListener("scroll", handleScroll);
-refs.gallery.addEventListener("click", disableClick)
+loadMoreBtn.button. addEventListener('click', onLoadMore);
 
-function disableClick(e){
-  // e.preventDefault();
-  if(e.target.nodeName === "img"){
-    e.preventDefault();
-  }
-
-}
 function onSearch (e){
   e.preventDefault();  
   apiService.query = e.currentTarget.elements.searchQuery.value
   apiService.resetPage();
   clearGallery();
   fetchApiMarkup(); 
+  loadMoreBtn.show() 
+};
+
+function onLoadMore (e){ 
+  getLoadMoreApiMarkup();   
 }; 
 
-function createMarkup({largeImageURL, tags, likes, views, comments, downloads, webformatURL
-}){
+function createMarkup({previewURL, largeImageURL, tags, likes, views, comments, downloads}){
   return `<div class="photo-card">
-  <a href="${largeImageURL}">
-  <img src="${webformatURL}" 
-  alt="${tags}" loading="lazy" /></a>
+  <img src="${largeImageURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
       <b>Likes: ${likes}</b>
@@ -61,10 +54,13 @@ function createMarkup({largeImageURL, tags, likes, views, comments, downloads, w
 };
 
 function fetchApiMarkup(){
+  // loadMoreBtn.disable(); 
   return getApiMarkup().then(markup =>{ 
     updateGallery(markup);
+    loadMoreBtn.enable(); 
   })
   .catch(err => {
+    loadMoreBtn.hide();
     console.log(err)
   })  
 }
@@ -75,6 +71,7 @@ function getApiMarkup(){
     console.log(hits)
     if (hits.length === 0){
       console.log(hits)
+      loadMoreBtn.hide();
       Notify.failure('Sorry, there are no images matching your search query. Please try again.');
       return
     }
@@ -84,55 +81,44 @@ function getApiMarkup(){
 }
 
 function getLoadMoreApiMarkup(){
+  loadMoreBtn.disable(); 
   return getFetchLoadMore().then(markup =>{ 
     updateGallery(markup);
-  
+    loadMoreBtn.enable();
   });
-}
-function showLastPage(){
-  return apiService.fetchRequest()
-  .then(({hits, totalHits}) => {
-    if(totalHits / hits.length * refs.pageNumber <= 1 ){
-      Notify.failure('We are sorry, but you have reached the end of search results.')
-    }
-        
-  })
 }
 
 function getFetchLoadMore(){
   return apiService.fetchRequest()
-  .then(({hits, totalHits}) => {
-    if(totalHits / (hits.length * apiService.page) <= 1 ){
-      Notify.failure('We are sorry, but you have reached the end of search results.')
-      return hits.reduce((markup, hit) => markup + createMarkup(hit), "");
-    } 
+  .then(({hits, totalHits}) => {    
     return hits.reduce((markup, hit) => markup + createMarkup(hit), "");      
   })
   .catch(err => {
+    loadMoreBtn.hide();
     console.log(err)
   }); 
 }
   
 function updateGallery(markup){
   refs.gallery.insertAdjacentHTML('beforeend', markup)
-  lightbox.refresh()
 }
 function clearGallery(){
   refs.gallery.innerHTML = "";
 }
-function handleScroll() {
-  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  if (scrollTop + clientHeight >= scrollHeight - 5) {
-    getLoadMoreApiMarkup();
-    
-  }
+
+// ==========================================
+function showLastPage(){
+  return apiService.fetchRequest()
+  .then(({hits, totalHits}) => {
+    if(totalHits / (hits.array * pageNumber <= 1 )){
+      Notify.failure('We are sorry, but you have reached the end of search results.')
+    }
+        
+  })
 }
 // ==========================================
 
-// ==========================================
-
-
-//   const { height: cardHeight } = document
+// const { height: cardHeight } = document
 //   .querySelector(".gallery")
 //   .firstElementChild.getBoundingClientRect();
 
@@ -143,9 +129,9 @@ function handleScroll() {
 
 
 
-const lightbox = new SimpleLightbox('.gallery a', { 
-  // captions: true,
-  // captionDelay: 250,
-  // captionPosition: 'bottom',
-  // captionsData: 'alt', 
-  });
+// let lightbox = new SimpleLightbox('.gallery a', { 
+//   captions: true,
+//   captionDelay: 250,
+//   captionPosition: 'bottom',
+//   captionsData: 'alt', 
+//   });
