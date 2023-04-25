@@ -32,7 +32,7 @@ function onSearch (e){
   apiService.query = e.currentTarget.elements.searchQuery.value
   apiService.resetPage();
   clearGallery();
-  fetchApiMarkup(); 
+  getSearchApiMarkup(); 
 }; 
 
 function createMarkup({largeImageURL, tags, likes, views, comments, downloads, webformatURL
@@ -58,8 +58,8 @@ function createMarkup({largeImageURL, tags, likes, views, comments, downloads, w
 </div>`
 };
 
-function fetchApiMarkup(){
-  return getApiMarkup().then(markup =>{ 
+function getSearchApiMarkup(){
+  return getFetchSearch().then(markup =>{ 
     updateGallery(markup);
       const { height: cardHeight } = document
   .querySelector(".gallery")
@@ -75,7 +75,7 @@ window.scrollBy({
   })  
 }
 
-function getApiMarkup(){
+function getFetchSearch(){
   return apiService.fetchRequest()
   .then(({hits, totalHits}) => {
     console.log(hits)
@@ -94,15 +94,6 @@ function getLoadMoreApiMarkup(){
     updateGallery(markup);
   
   });
-}
-function showLastPage(){
-  return apiService.fetchRequest()
-  .then(({hits, totalHits}) => {
-    if(totalHits / hits.length * refs.pageNumber <= 1 ){
-      Notify.failure('We are sorry, but you have reached the end of search results.')
-    }
-        
-  })
 }
 
 function getFetchLoadMore(){
@@ -133,21 +124,6 @@ function handleScroll() {
     
   }
 }
-// ==========================================
-
-// ==========================================
-
-
-//   const { height: cardHeight } = document
-//   .querySelector(".gallery")
-//   .firstElementChild.getBoundingClientRect();
-
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: "smooth",
-// });
-
-
 
 const lightbox = new SimpleLightbox('.gallery a', { 
   captions: true,
