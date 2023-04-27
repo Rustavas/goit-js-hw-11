@@ -1,3 +1,4 @@
+import axios from 'axios';
 export default class ApiRequest {
   static END_POINT = 'https://pixabay.com/api/';
   static API_KEY = '35530318-c832a4dcd48fc070f5c50cd79';
@@ -6,18 +7,26 @@ export default class ApiRequest {
     this.page = 1;
     this.numberPerPage = 40;
   }
-  fetchRequest(searchQuery){
+  async fetchRequest(searchQuery){
      
     const url = 
     `${ApiRequest.END_POINT}?key=${ApiRequest.API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${this.page}&per_page=${this.numberPerPage}`
     
-    return fetch(url)
-    .then(response => response.json())
-    .then(data => {
+    const {data} = await axios.get(url)
+    this.incrementPage();
+    return data;
+    // return axios.get(url).then(({data}) => {
+    //   this.incrementPage();
+    //   return data;
+    // });
 
-     this.incrementPage(); 
-      return data;
-    });
+    // return fetch(url)
+    // .then(response => response.json())
+    // .then(data => {
+
+    //  this.incrementPage(); 
+    //   return data;
+    // });
   }
 
   incrementPage(){
