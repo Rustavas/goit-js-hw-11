@@ -15,18 +15,6 @@ export default class ApiRequest {
     const {data} = await axios.get(url)
     this.incrementPage();
     return data;
-    // return axios.get(url).then(({data}) => {
-    //   this.incrementPage();
-    //   return data;
-    // });
-
-    // return fetch(url)
-    // .then(response => response.json())
-    // .then(data => {
-
-    //  this.incrementPage(); 
-    //   return data;
-    // });
   }
 
   incrementPage(){
